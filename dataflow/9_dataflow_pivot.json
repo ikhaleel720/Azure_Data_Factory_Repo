@@ -1,0 +1,96 @@
+{
+	"name": "9_dataflow_pivot",
+	"properties": {
+		"folder": {
+			"name": "2_Dataflow"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "sr_ds",
+						"type": "DatasetReference"
+					},
+					"name": "employeeinfo"
+				},
+				{
+					"dataset": {
+						"referenceName": "sr_ds",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "sink_ds",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "pivot1"
+				},
+				{
+					"name": "unpivot1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          empid as short,",
+				"          firstname as string,",
+				"          lastname as string,",
+				"          age as short,",
+				"          salary as short,",
+				"          gender as string,",
+				"          deptno as short,",
+				"          state as string,",
+				"          mobilenumber as long,",
+				"          mail as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> employeeinfo",
+				"source(output(",
+				"          deptno as short,",
+				"          F as string,",
+				"          M as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"employeeinfo aggregate(groupBy(deptno,",
+				"          gender),",
+				"     TotalSalary = sum(salary)) ~> aggregate1",
+				"aggregate1 pivot(groupBy(deptno),",
+				"     pivotBy(gender),",
+				"     {} = sum(TotalSalary),",
+				"     columnNaming: '$N$V',",
+				"     lateral: true) ~> pivot1",
+				"source1 unpivot(output(",
+				"          gender as string,",
+				"          totalsalary as string",
+				"     ),",
+				"     ungroupBy(deptno),",
+				"     lateral: true,",
+				"     ignoreNullPivots: false) ~> unpivot1",
+				"pivot1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['result_pivot.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}

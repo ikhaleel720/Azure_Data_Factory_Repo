@@ -1,0 +1,9 @@
+{
+	"name": "datafactry720",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "6d5d8d2e-7a23-4c28-92e9-e9c41310e354",
+		"tenantId": "7721c99f-e8c7-4517-8a39-5570f995a70d"
+	}
+}

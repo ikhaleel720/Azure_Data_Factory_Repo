@@ -1,0 +1,31 @@
+{
+	"name": "source_waitactvty",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "gen2strg_ls",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"srcfilename": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "wait,until_actvty"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().srcfilename",
+					"type": "Expression"
+				},
+				"folderPath": "inbound",
+				"fileSystem": "folder"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

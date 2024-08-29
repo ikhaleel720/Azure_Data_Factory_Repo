@@ -1,0 +1,22 @@
+{
+	"name": "sink_waitactvty",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "gen2strg_ls",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "wait,until_actvty"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "outbound",
+				"fileSystem": "folder"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

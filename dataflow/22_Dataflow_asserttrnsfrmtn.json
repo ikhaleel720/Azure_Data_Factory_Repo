@@ -1,0 +1,78 @@
+{
+	"name": "22_Dataflow_asserttrnsfrmtn",
+	"properties": {
+		"folder": {
+			"name": "3_Dataflow"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "sr_ds",
+						"type": "DatasetReference"
+					},
+					"name": "empasserdata"
+				},
+				{
+					"dataset": {
+						"referenceName": "deptinfo_ds",
+						"type": "DatasetReference"
+					},
+					"name": "deptdata"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "sink_ds",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "assert1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          empid as short,",
+				"          empname as string,",
+				"          gender as string,",
+				"          dob as string,",
+				"          deptid as short",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> empasserdata",
+				"source(output(",
+				"          deptid as short,",
+				"          deptname as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> deptdata",
+				"empasserdata, deptdata assert(expectUnique(empid, false, 'assert1'),",
+				"     expectTrue(!isNull(toDate(dob, 'ddMMyyyy')), false, 'assert2'),",
+				"     expectExists(empasserdata@deptid == deptdata@deptid, false, 'assert3')) ~> assert1",
+				"assert1 derive(Error_Records = isError()) ~> derivedColumn1",
+				"derivedColumn1 filter(Error_Records == false()) ~> filter1",
+				"filter1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

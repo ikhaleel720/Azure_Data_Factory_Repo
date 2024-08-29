@@ -1,0 +1,85 @@
+{
+	"name": "23_Dataflow_flowlets",
+	"properties": {
+		"folder": {
+			"name": "3_Dataflow"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "sr_ds",
+						"type": "DatasetReference"
+					},
+					"name": "empdupdata"
+				},
+				{
+					"dataset": {
+						"referenceName": "deptinfo_ds",
+						"type": "DatasetReference"
+					},
+					"name": "deptdupdata"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "sink_ds",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "flowlet1",
+					"flowlet": {
+						"referenceName": "flowlet1",
+						"type": "DataFlowReference"
+					}
+				},
+				{
+					"name": "flowlet2",
+					"flowlet": {
+						"referenceName": "flowlet1",
+						"type": "DataFlowReference"
+					}
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          empid as short,",
+				"          empname as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> empdupdata",
+				"source(output(",
+				"          deptid as short,",
+				"          deptname as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> deptdupdata",
+				"empdupdata compose(mapColumn(",
+				"          id = empid,",
+				"          name = empname",
+				"     ),",
+				"     composition: 'flowlet1') ~> flowlet1@(output1)",
+				"deptdupdata compose(mapColumn(",
+				"          id = deptid,",
+				"          name = deptname",
+				"     ),",
+				"     composition: 'flowlet1') ~> flowlet2@(output1)",
+				"flowlet1@output1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

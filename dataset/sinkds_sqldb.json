@@ -1,0 +1,30 @@
+{
+	"name": "sinkds_sqldb",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sqldb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Dataflow_ds"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "deptno",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "deptname",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "emp_information_final"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

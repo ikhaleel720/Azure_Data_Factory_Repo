@@ -1,0 +1,43 @@
+{
+	"name": "src_json_ds",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "gen2strg_ls",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Dataflow_ds"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "emp_details_corrupted.json",
+				"folderPath": "inbound1",
+				"fileSystem": "folder"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "integer"
+				},
+				"name": {
+					"type": "string"
+				},
+				"gender": {
+					"type": "string"
+				},
+				"language": {
+					"type": "string"
+				},
+				"location": {
+					"type": "string"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
