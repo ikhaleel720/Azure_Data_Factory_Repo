@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "24_Dataflow_alterrow",
+						"referenceName": "25_Dataflow_alterrow_deleteactvty",
 						"type": "DataFlowReference"
 					},
 					"compute": {
