@@ -23,7 +23,7 @@
 		],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "emp_information_final"
+			"table": "cust_dtls"
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"

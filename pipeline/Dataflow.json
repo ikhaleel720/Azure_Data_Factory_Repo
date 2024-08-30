@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "21_Dataflow_Parse",
+						"referenceName": "24_Dataflow_alterrow",
 						"type": "DataFlowReference"
 					},
 					"compute": {
