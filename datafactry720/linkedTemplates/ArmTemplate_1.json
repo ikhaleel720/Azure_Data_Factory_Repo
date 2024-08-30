@@ -1407,54 +1407,115 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Dataflow')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
+			"name": "[concat(parameters('factoryName'), '/25_Dataflow_alterrow_deleteactvty')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"activities": [
-					{
-						"name": "Data flow1",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "24_Dataflow_alterrow",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"customersource1": {},
-									"customersource": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
 				"folder": {
-					"name": "Dataflow"
+					"name": "4_Dataflow"
 				},
-				"annotations": [],
-				"lastPublishTime": "2024-08-29T07:20:35Z"
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "sr_ds",
+								"type": "DatasetReference"
+							},
+							"name": "customersource1"
+						},
+						{
+							"dataset": {
+								"referenceName": "sinkds_sqldb",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "sinkds_sqldb",
+								"type": "DatasetReference"
+							},
+							"name": "customersource"
+						},
+						{
+							"dataset": {
+								"referenceName": "sinkds_sqldb",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "exists1"
+						},
+						{
+							"name": "alterRow2"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          cust_id as string,",
+						"          cust_name as string,",
+						"          country as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> customersource1",
+						"source(output(",
+						"          cust_id as string,",
+						"          cust_name as string,",
+						"          country as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> source1",
+						"customersource1 alterRow(upsertIf(true())) ~> alterRow1",
+						"source1, customersource1 exists(source1@cust_id == customersource1@cust_id,",
+						"     negate:true,",
+						"     broadcast: 'auto')~> exists1",
+						"exists1 alterRow(deleteIf(true())) ~> alterRow2",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          deptno as integer,",
+						"          deptname as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:true,",
+						"     upsertable:true,",
+						"     keys:['cust_id'],",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> customersource",
+						"alterRow2 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          deptno as integer,",
+						"          deptname as string",
+						"     ),",
+						"     deletable:true,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     keys:['cust_id'],",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+					]
+				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/24_Dataflow_alterrow')]"
-			]
+			"dependsOn": []
 		}
 	]
 }
