@@ -1344,6 +1344,68 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/24_Dataflow_alterrow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "4_Dataflow"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "sr_ds",
+								"type": "DatasetReference"
+							},
+							"name": "customersource1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "sinkds_sqldb",
+								"type": "DatasetReference"
+							},
+							"name": "customersource"
+						}
+					],
+					"transformations": [
+						{
+							"name": "alterRow1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          cust_id as string,",
+						"          cust_name as string,",
+						"          country as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> customersource1",
+						"customersource1 alterRow(deleteIf(country=='USA')) ~> alterRow1",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          deptno as integer,",
+						"          deptname as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> customersource"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Dataflow')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1363,12 +1425,12 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "21_Dataflow_Parse",
+								"referenceName": "24_Dataflow_alterrow",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
-									"source1": {},
-									"sink1": {}
+									"customersource1": {},
+									"customersource": {}
 								}
 							},
 							"staging": {},
@@ -1390,7 +1452,7 @@
 				"lastPublishTime": "2024-08-29T07:20:35Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/21_Dataflow_Parse')]"
+				"[concat(variables('factoryId'), '/dataflows/24_Dataflow_alterrow')]"
 			]
 		}
 	]

@@ -375,7 +375,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileName": "emp11.csv",
+						"fileName": "cc2.csv",
 						"folderPath": "inbound1",
 						"fileSystem": "folder"
 					},
@@ -839,7 +839,7 @@
 				],
 				"typeProperties": {
 					"schema": "dbo",
-					"table": "emp_information_final"
+					"table": "cust_dtls"
 				}
 			},
 			"dependsOn": [
