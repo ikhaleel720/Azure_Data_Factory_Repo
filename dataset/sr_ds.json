@@ -2,7 +2,7 @@
 	"name": "sr_ds",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "gen2strg_ls",
+			"referenceName": "ls_gen2strg",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
