@@ -1,0 +1,19 @@
+{
+	"name": "src_webactvty",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_gen2strg",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "sales.txt",
+				"folderPath": "inbound1",
+				"fileSystem": "folder"
+			}
+		}
+	}
+}
