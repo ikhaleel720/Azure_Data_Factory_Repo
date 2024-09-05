@@ -15,5 +15,6 @@
 				"fileSystem": "folder"
 			}
 		}
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
 }

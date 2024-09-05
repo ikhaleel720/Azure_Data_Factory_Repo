@@ -80,6 +80,8 @@
 		"folder": {
 			"name": "webactvty_sendmail"
 		},
-		"annotations": []
-	}
+		"annotations": [],
+		"lastPublishTime": "2024-09-02T07:59:45Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
 }
